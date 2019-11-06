@@ -1,31 +1,21 @@
-import { stripAndTrim } from "../helpers";
+import { headerInfo } from '../helpers';
 
 export const scrape = async page => {
-  let data = {
-    title: null,
-    original_price: null,
-    sale_price: null,
-    price: null,
-    image: null,
-    brand: null,
-    details: null,
-    description: null
-  };
-
-  const title = stripAndTrim(await page.$eval("#title", e => e.innerHTML));
-  data.title = title;
-
-  return data;
+  return await headerInfo(page);
 };
 
+import * as alibaba from "./alibaba";
 import * as amazon from "./amazon";
-import * as bestbuy from "./bestbuy";
+import * as ebay from "./ebay";
+import * as newegg from "./newegg";
 import * as target from "./target";
 import * as walmart from "./walmart";
 
 export default {
+  alibaba,
   amazon,
-  bestbuy,
+  ebay,
+  newegg,
   target,
   walmart
 };

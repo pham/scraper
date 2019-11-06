@@ -1,8 +1,8 @@
-const Scraper = require("../lib");
-const yup = require("yup");
+const Scraper = require('../lib');
+const yup = require('yup');
 
 test(
-  "adding",
+  'adding',
   async () => {
     const schema = yup.object().shape({
       title: yup.string().required(),
@@ -12,7 +12,7 @@ test(
     });
 
     const data = await Scraper.scrapeAndDetect(
-      "https://www.amazon.com/dp/B075RWFCHB/ref_=fs_ods_fs_aucc_sr"
+      'https://smile.amazon.com/Bose-Cancelling-Wireless-Bluetooth-Headphones/dp/B07Q9MJKBV/ref=sr_1_2_sspa'
     );
 
     await schema.isValid(data).then(result => {

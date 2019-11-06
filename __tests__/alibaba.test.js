@@ -12,7 +12,7 @@ test(
     });
 
     const data = await Scraper.scrapeAndDetect(
-      'https://www.target.com/p/sony-wh1000xm3-b-headphones/-/A-75574683'
+      'https://www.alibaba.com/product-detail/Custom-keyboard-60-Keyboard-GH60-GK64_60839942771.html'
     );
 
     await schema.isValid(data).then(result => {

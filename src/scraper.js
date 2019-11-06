@@ -1,21 +1,36 @@
-import puppeteer from "puppeteer";
-import urlParse from "url-parse";
-import { map, includes } from "lodash";
+import puppeteer from 'puppeteer';
+import urlParse from 'url-parse';
+import { map, includes } from 'lodash';
 
-import sites, { scrape as defaultScrape } from "./sites";
+import sites, { scrape as defaultScrape } from './sites';
+
+const failure = async (browser) => {
+  await browser.close();
+  return null;
+};
 
 export const scrape = async (url, site) => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
   const page = await browser.newPage();
 
-  await page.goto(url, { waitUntil: "networkidle" });
+  try {
+    // networkidle0/2 load domcontentloaded
+    await page.goto(url, { waitUntil: 'networkidle2' });
+  } catch (e) {
+    return failure(browser);
+  };
 
   let data;
-  if (!site) {
-    data = await defaultScrape(page);
-  } else {
-    data = await site.scrape(page);
-  }
+  try {
+    data = site ? await site.scrape(page) : await defaultScrape(page);
+  } catch (e) {
+    console.log(e);
+    return failure(browser);
+  };
+
   await browser.close();
   return data;
 };

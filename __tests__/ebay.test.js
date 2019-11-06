@@ -1,8 +1,8 @@
-const Scraper = require("../lib");
-const yup = require("yup");
+const Scraper = require('../lib');
+const yup = require('yup');
 
 test(
-  "adding",
+  'adding',
   async () => {
     const schema = yup.object().shape({
       title: yup.string().required(),
@@ -12,7 +12,7 @@ test(
     });
 
     const data = await Scraper.scrapeAndDetect(
-      "https://www.bestbuy.com/site/apple-airpods-white/5577872.p?skuId=5577872"
+      'https://www.ebay.com/itm/Nomos-Tangente-Datum-Gangreserve-Mens-Watch-131/183888084023'
     );
 
     await schema.isValid(data).then(result => {
