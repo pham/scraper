@@ -9,12 +9,66 @@ const failure = async (browser) => {
   return null;
 };
 
+const blockedResourceTypes = [
+  'image',
+  'media',
+  'font',
+  'texttrack',
+  'object',
+  'beacon',
+  'csp_report',
+  'imageset',
+];
+
+const skippedResources = [
+  'quantserve',
+  'adzerk',
+  'doubleclick',
+  'adition',
+  'exelator',
+  'sharethrough',
+  'cdn.api.twitter',
+  'google-analytics',
+  'googletagmanager',
+  'google',
+  'fontawesome',
+  'facebook',
+  'analytics',
+  'optimizely',
+  'clicktale',
+  'mixpanel',
+  'zedo',
+  'clicksor',
+  'tiqcdn',
+];
+
 export const scrape = async (url, site) => {
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    ignoreDefaultArgs: ['--disable-extensions'],
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--disable-gpu',
+      '--window-size=1024x768',
+    ]
   });
+
   const page = await browser.newPage();
+  await page.setRequestInterception(true);
+  page.on('request', request => {
+    const requestUrl = request._url.split('?')[0].split('#')[0];
+    if (
+      blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
+      skippedResources.some(resource => requestUrl.indexOf(resource) !== -1)
+    ) {
+      request.abort();
+    } else {
+      request.continue();
+    }
+  });
 
   try {
     // networkidle0/2 load domcontentloaded
@@ -27,7 +81,6 @@ export const scrape = async (url, site) => {
   try {
     data = site ? await site.scrape(page) : await defaultScrape(page);
   } catch (e) {
-    console.log(e);
     return failure(browser);
   };
 
