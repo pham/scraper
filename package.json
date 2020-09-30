@@ -28,7 +28,7 @@
   "dependencies": {
     "bluebird": "^3.7.2",
     "lodash": "^4.17.20",
-    "puppeteer": "^5.2.1",
+    "puppeteer": "^5.3.1",
     "striptags": "^3.1.1",
     "url-parse": "^1.4.7"
   },
